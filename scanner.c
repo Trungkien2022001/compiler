@@ -24,6 +24,74 @@ int ln, cn;
 char str[MAX_IDENT_LEN];
 char c;
 /***************************************************************/
+void skipBlank() {
+  // TODO
+  readChar();
+}
+Token* readConstString(void){
+  //TODO
+  Token *token;
+  int i = 0;
+  int ln = lineNo, cn = colNo;
+  token = makeToken(TK_STRING, lineNo, colNo);
+  readChar();
+  while(charCodes[currentChar] == CHAR_LETTER || charCodes[currentChar] == CHAR_DIGIT){
+    token->string[i++] = (char) currentChar;
+    if(i >= 15){
+      error(ERR_STRINGTOOLONG, ln, cn);
+      return makeToken(TK_NONE, ln, cn);
+    }
+    readChar();
+  }
+  if(charCodes[currentChar] != CHAR_DOUBLEQUOTE){
+    error(ERR_INVALIDSTRINGCONSTANT, ln, cn);
+    return makeToken(TK_NONE, ln, cn);
+  }
+  token->string[i] = '\0';
+  readChar(); // read "
+  return token;
+}
+
+Token* readIdentKeyword(void) {
+  // TODO
+  Token *token;
+  // token->tokenType == TK_IDENT
+  token = makeToken(TK_IDENT, lineNo, colNo);
+  int count = 0;
+  // read string
+  while(charCodes[currentChar] == CHAR_LETTER || charCodes[currentChar] == CHAR_DIGIT){
+    if(count == 16){
+      error(ERR_IDENTTOOLONG,lineNo,colNo);
+      return NULL;
+    }
+    token->string[count++] = (char)currentChar;
+    readChar();
+  }
+  token->string[count] = '\0';
+  TokenType tokenType = checkKeyword(token->string);
+  // check form token
+  if(KW_PROGRAM <= tokenType && tokenType <= KW_UNTIL){
+      token->tokenType = tokenType; 
+  }
+  if(token->tokenType != TK_NONE && token->tokenType != TK_IDENT && token->tokenType != TK_NUMBER && token->tokenType != TK_CHAR && token->tokenType != TK_EOF && token->tokenType != TK_STRING){
+    token->string[0] = '\0';  
+  }
+  return token;
+} 
+Token* readNumber(void) {
+  // TODO
+  Token *token;
+  token = makeToken (TK_NUMBER, lineNo, colNo);
+  int count = 0;
+  while(charCodes[currentChar] == CHAR_DIGIT){
+    token->string[count++] = (char)currentChar;
+    readChar();
+  }
+  token->string[count] = '\0';
+  token->value = atoi(token->string);
+  return token;
+}
+
 Token* getToken(void) 
 {
   Token *token;
@@ -65,7 +133,7 @@ Token* getToken(void)
   		case CHAR_EQ:
     		state =19; 
 			break;
-  		case CHAR_EXCLAMATION:
+  		case CHAR_EXCLAIMATION:
   			state = 20;
 			break;
   		case CHAR_COMMA:
@@ -97,18 +165,27 @@ Token* getToken(void)
   	return makeToken(TK_EOF, lineNo, colNo);
   case 2:
     //TODO (Skip blanks)
+    // DONE
+    skipBlank(); 
+    return getToken();
   case 3:
  	// TODO Recognize Identifiers and keywords
+  // DONE
+    return readIdentKeyword();
   case 4:
   		token->tokenType = checkKeyword(str);
   		if (token->tokenType == TK_NONE) state=5; else state =6;
     	return getToken();
   case 5:
   		//TODO Identifiers
+      readConstString();
   case 6:
+  readConstString();
   		//TODO Keywords
   case 7: 
 	//TODO  Numbers
+  // Done
+  return readNumber();
   case 9:
 	readChar();
     return makeToken(SB_PLUS, lineNo, colNo-1);
