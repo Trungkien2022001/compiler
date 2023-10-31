@@ -1,0 +1,22 @@
+0. Kiểm tra máy đã có trình biên dịch c/c++ chưa
+    trên terminal gõ 
+    make hoặc MinGW32-make
+    Nếu có lỗi thì chưa có
+    CHạy terminal với quyền admin
+    => choco install make
+    Nếu k lỗi
+    gcc hoặc gcc --version
+    nếu k có lỗi gì thì thành công
+1. Run file Makefile để tạo .exe file phục vụ cho quá trình test: 
+    (Điều kiện quan trong, máy đã cài g++, và đường dẫn của folder này k được chứa dấu cách)
+    Ví dụ đường dẫn hợp lệ: E:\Code\Project\compiler\Makefile 
+    Ví dụ đường dẫn không  hợp lệ: E:\Code\Project hehe\compiler\Makefile  (có chứa dấu cách gcc ngu k đọc được)
+  ===========> 
+    Câu lệnh chạy trên terminal:
+     -> make (chỉ duy nhất từ make thôi nhé, giống kiểu: npm start)
+    hoặc -> cmd: MinGW32-make (Máy t thì chạy cái này)
+
+2. Test: đọc dữ liệu từ file .pkl => Biên dịch
+    cmd: ./scanner ../test/example3.kpl
+    or cmd: ./scanner ./example3.kpl (copy nó trực tiếp vào folder cùng cấp với thằng compile , cùng cấp với file scanner.exe)
+    (./scanner là file .exe từ bước 1, ./example3.kpl là input để biên dịch)
