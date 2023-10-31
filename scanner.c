@@ -12,6 +12,7 @@
 #include "token.h"
 #include "error.h"
 
+#define printf(...) fprintf(File, __VA_ARGS__)
 
 extern int lineNo;
 extern int colNo;
@@ -251,7 +252,7 @@ Token* getToken(void) {
 
 /******************************************************************/
 
-void printToken(Token *token) {
+void printToken(Token *token, FILE *File) {
 
   printf("%d-%d:", token->lineNo, token->colNo);
 
@@ -309,7 +310,7 @@ void printToken(Token *token) {
   }
 }
 
-int scan(char *fileName) {
+int scan(char *fileName, FILE *File) {
   Token *token;
 
   if (openInputStream(fileName) == IO_ERROR)
@@ -317,7 +318,7 @@ int scan(char *fileName) {
 
   token = getToken();
   while (token->tokenType != TK_EOF) {
-    printToken(token);
+    printToken(token, File);
     free(token);
     token = getToken();
   }
@@ -330,15 +331,22 @@ int scan(char *fileName) {
 /******************************************************************/
 
 int main(int argc, char *argv[]) {
+  FILE *File;
+
+  File = fopen("output.txt", "w+");
+
   if (argc <= 1) {
     printf("scanner: no input file.\n");
     return -1;
   }
 
-  if (scan(argv[1]) == IO_ERROR) {
+  if (scan(argv[1], File) == IO_ERROR) {
     printf("Can\'t read input file!\n");
     return -1;
   }
+
+  fclose(File);
+
     
   return 0;
 }
