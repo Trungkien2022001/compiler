@@ -13,6 +13,8 @@
 #include "token.h"
 #include "error.h"
 
+#define printf(...) fprintf(File, __VA_ARGS__)
+
 extern int lineNo;
 extern int colNo;
 extern int currentChar;
@@ -111,8 +113,10 @@ Token *getToken(void)
     ln = lineNo;
     cn = colNo;
     cnt = 0;
-    while(charCodes[currentChar] == CHAR_LETTER || charCodes[currentChar] == CHAR_DIGIT){
-      if(cnt >= MAX_IDENT_LEN) error(ERR_IDENTTOOLONG, ln, cn);
+    while (charCodes[currentChar] == CHAR_LETTER || charCodes[currentChar] == CHAR_DIGIT)
+    {
+      if (cnt >= MAX_IDENT_LEN)
+        error(ERR_IDENTTOOLONG, ln, cn);
       str[cnt++] = (char)currentChar;
       readChar();
     }
@@ -121,24 +125,28 @@ Token *getToken(void)
     return getToken();
   case 4:
     tokenType = checkKeyword(str);
-    if(tokenType == TK_NONE) 
+    if (tokenType == TK_NONE)
       state = 5;
-    else 
+    else
       state = 6;
     return getToken();
   case 5:
     token = makeToken(TK_IDENT, ln, cn);
-    for(int i=0; i<MAX_IDENT_LEN + 1; i++){
+    for (int i = 0; i < MAX_IDENT_LEN + 1; i++)
+    {
       token->string[i] = str[i];
-      if(str[i] == '\0') break;
+      if (str[i] == '\0')
+        break;
     }
     state = 0;
     return token;
   case 6:
     token = makeToken(tokenType, ln, cn);
-    for(int i=0; i<MAX_IDENT_LEN + 1; i++){
+    for (int i = 0; i < MAX_IDENT_LEN + 1; i++)
+    {
       token->string[i] = str[i];
-      if(str[i] == '\0') break;
+      if (str[i] == '\0')
+        break;
     }
     state = 0;
     return token;
@@ -146,7 +154,8 @@ Token *getToken(void)
     ln = lineNo;
     cn = colNo;
     cnt = 0;
-    while(charCodes[currentChar] == CHAR_DIGIT){
+    while (charCodes[currentChar] == CHAR_DIGIT)
+    {
       str[cnt++] = (char)currentChar;
       readChar();
     }
@@ -155,9 +164,11 @@ Token *getToken(void)
     return getToken();
   case 8:
     token = makeToken(TK_NUMBER, ln, cn);
-    for(int i=0; i<MAX_IDENT_LEN + 1; i++){
+    for (int i = 0; i < MAX_IDENT_LEN + 1; i++)
+    {
       token->string[i] = str[i];
-      if(str[i] == '\0') break;
+      if (str[i] == '\0')
+        break;
     }
     token->value = atoi(token->string);
     state = 0;
@@ -421,7 +432,7 @@ Token *getToken(void)
 
 /******************************************************************/
 
-void printToken(Token *token)
+void printToken(Token *token, FILE *File)
 {
 
   printf("%d-%d:", token->lineNo, token->colNo);
@@ -564,7 +575,7 @@ void printToken(Token *token)
   }
 }
 
-int scan(char *fileName)
+int scan(char *fileName, FILE *File)
 {
   Token *token;
 
@@ -574,7 +585,7 @@ int scan(char *fileName)
   token = getToken();
   while (token->tokenType != TK_EOF)
   {
-    printToken(token);
+    printToken(token, File);
     free(token);
     token = getToken();
   }
@@ -588,13 +599,17 @@ int scan(char *fileName)
 
 int main(int argc, char *argv[])
 {
+  FILE *File;
+
+  File = fopen("output.txt", "w+");
+
   if (argc <= 1)
   {
     printf("scanner: no input file.\n");
     return -1;
   }
 
-  if (scan(argv[1]) == IO_ERROR)
+  if (scan(argv[1], File) == IO_ERROR)
   {
     printf("Can\'t read input file!\n");
     return -1;
