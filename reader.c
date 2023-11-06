@@ -9,6 +9,7 @@ int currentChar;
 int readChar(void) {
   currentChar = getc(inputStream);
   colNo ++;
+  printf("Currentchar: %c, ascii_code %d, lineNo: %d, colNo: %d\n", currentChar, currentChar, lineNo, colNo);
   if (currentChar == '\n') {
     lineNo ++;
     colNo = 0;

@@ -32,8 +32,11 @@ void skipComment() {
   if(charCodes[currentChar] == CHAR_TIMES){
     while(charCodes[currentChar] != CHAR_RPAR){
       readChar();
-      if(currentChar == EOF)
-        error(ERR_ENDOFCOMMENT, lineNo, colNo);
+
+
+      // Lỗi lặp ko dừng
+      // if(currentChar == EOF)
+        // error(ERR_ENDOFCOMMENT, lineNo, colNo);
     }
   }else{
     do{
