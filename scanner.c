@@ -615,6 +615,8 @@ int main(int argc, char *argv[])
     return -1;
   }
 
+  fclose(File);
+
   return 0;
 }
 
