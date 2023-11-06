@@ -11,22 +11,19 @@ void error(ErrorCode err, int lineNo, int colNo) {
   case ERR_ENDOFCOMMENT:
     printf("%d-%d:%s\n", lineNo, colNo, ERM_ENDOFCOMMENT);
     break;
-  case ERR_IDENTTOOLONG :
+  case ERR_IDENTTOOLONG:
     printf("%d-%d:%s\n", lineNo, colNo, ERM_IDENTTOOLONG);
     break;
-  case ERR_STRINGTOOLONG :
-    printf("%d-%d:%s\n", lineNo, colNo, ERM_STRINGTOOLONG);
+  case ERR_NUMBERTOOLONG:
+    printf("%d-%d:%s\n", lineNo, colNo, ERM_NUMBERTOOLONG);
     break;
   case ERR_INVALIDCHARCONSTANT:
     printf("%d-%d:%s\n", lineNo, colNo, ERM_INVALIDCHARCONSTANT);
-    break;
-  case ERR_INVALIDSTRINGCONSTANT:
-    printf("%d-%d:%s\n", lineNo, colNo, ERM_INVALIDSTRINGCONSTANT);
     break;
   case ERR_INVALIDSYMBOL:
     printf("%d-%d:%s\n", lineNo, colNo, ERM_INVALIDSYMBOL);
     break;
   }
-  exit(-1);
+  // exit(-1);
 }
 
