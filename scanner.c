@@ -160,7 +160,57 @@ Token *getToken(void)
       readChar();
     }
     str[cnt] = '\0';
-    state = 8;
+
+    // Cắt số 0 ở đầu
+    int len = strlen(str);
+    int i, count = 0;
+    for (i = 0; i < len; i++)
+    {
+      if (str[i] == '0')
+      {
+        count++;
+      }
+      else
+      {
+        break;
+      }
+    }
+
+    // Nếu chuỗi chỉ chứa số 0, giữ lại ít nhất một số 0
+    if (count == len)
+    {
+      count--;
+    }
+
+    // Di chuyển các ký tự phía sau số 0
+    for (i = 0; i < len - count; i++)
+    {
+      str[i] = str[i + count];
+    }
+    // Đặt ký tự kết thúc chuỗi mới
+    str[len - count] = '\0';
+    // End cắt số 0 ở đầu
+
+    char int_max[MAX_IDENT_LEN];
+    snprintf(int_max, sizeof(int_max), "%d", INT_MAX);
+    if (strlen(str) > 10)
+    {
+      error(ERR_NUMBERTOOLONG, lineNo, colNo);
+    }
+    else
+    {
+      if (strlen(str) == 10 && strcmp(str, int_max) > 0)
+      {
+        error(ERR_NUMBERTOOLONG, lineNo, colNo);
+      }
+      else
+      {
+        state = 8;
+        return getToken();
+      }
+    }
+
+    state = 0;
     return getToken();
   case 8:
     token = makeToken(TK_NUMBER, ln, cn);
