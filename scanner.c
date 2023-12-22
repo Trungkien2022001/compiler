@@ -123,7 +123,7 @@ Token *getToken(void)
     str[cnt] = '\0';
     state = 4;
     return getToken();
-  case 4:
+  case 4://ssete
     tokenType = checkKeyword(str);
     if (tokenType == TK_NONE)
       state = 5;
